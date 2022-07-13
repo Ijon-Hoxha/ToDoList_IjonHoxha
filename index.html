@@ -8,6 +8,34 @@
     <title>ToDoList</title>
 </head>
 <body>
-    <h1> Here is a ToDoList made in Javascript</h1>
+<main>
+    <h1>ToDoList</h1>
+    <p id="open"></p>
+    <p id="close"></p>
+
+    <input type="text" id="number1">
+
+    <button id="add">Add Task</button>
+    
+    <ul id="history"></ul>
+    <button id="delete">Delete Tasks</button>
+</main>
 </body>
 </html>
+
+<script>
+    let history = [];
+    let openCount = 0;
+    let closedCount = 0;
+
+    function add(){
+        let n1 = document.getElementById("number1").value;
+        history.push(("text": n1, "status": "open"));
+    }
+    function updateHistory() {
+        // Updating the Local Storage
+        localStorage.setItem("history", JSON.stringify(history));
+        localStorage.setItem("openCount", JSON.stringify(openCount));
+        localStorage.setItem("closedCount", JSON.stringify(closedCount));
+    }
+</script>
