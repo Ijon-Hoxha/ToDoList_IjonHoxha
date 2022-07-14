@@ -30,12 +30,63 @@
 
     function add(){
         let n1 = document.getElementById("number1").value;
-        history.push(("text": n1, "status": "open"));
+        history.push({"text": n1, "status": "open"});
+        openCount++;
+        updateHistoryList();
     }
     function updateHistory() {
-        // Updating the Local Storage
+        
         localStorage.setItem("history", JSON.stringify(history));
         localStorage.setItem("openCount", JSON.stringify(openCount));
         localStorage.setItem("closedCount", JSON.stringify(closedCount));
+
+        
+        let historyList = document.getElementById("history");
+        historyList.innerHTML = "";
+        
+        for (let  i= 0;  i<history.length; i++) {
+            let item = document.createElement("li");
+            item.addEventListener("click", checkItem);
+            item.innerHTML = history[i].text;
+            if (history[i].status != "open") {
+                item.style.textDecoration = "line-through";
+            }
+            historyList.append(item);
+        }
+        document.getElementById("open").innerHTML = openCount + "tasks open!";
+        document.getElementById("close").innerHTML = closedCount + "tasks closed!";
     }
+    function checkItem(event) {
+        let currentCalcString = event.target.innerHTML;
+        let index = history.map(i=>i.text).indexOf(currentCalcString);
+        if (history[index].status == "open") {
+            history[index].status = "closed";
+            closedCount++;
+        } else {
+            history[index].status = "open";
+            openCount++;
+        }
+        updateHistoryList();
+        if((history.length == closedCount) && history.length > 0){
+            alert("All tasks finished! Good Job! ^-^");
+        }
+    }
+    function deleteList() {
+        history = [];
+        openCount = 0;
+        closedCount = 0;
+        updateHistoryList();
+    }
+    function loadHistory() {
+        history = JSON.parse(localStorage.getItem("history"));
+        openCount = JSON.parse(localStorage.getItem("openCount"));
+        closedCount = JSON.parse(localStorage.getItem("closedCount"));
+
+        updateHistoryList();
+    }
+
+    document.getElementById("add").addEventListener("click", add);
+    document.getElementById("delete").addEventListener("click", deleteList);
+    document.addEventListener("DOMContentLoaded", loadHistory);
+
 </script>
