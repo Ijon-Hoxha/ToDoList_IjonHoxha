@@ -4,27 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <title>ToDoList</title>
-    <style>
-        body{
-            background-color: grey;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-		ul li:hover{
-			text-decoration: line-through;
-			cursor: pointer;
-		}
-        main{
-            border-radius: 40px;
-			padding: 60px;
-            background-color: white;
-            opacity: 0.7;
-        }
-	</style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main>
@@ -32,84 +13,86 @@
     <p id="open"></p>
     <p id="close"></p>
 
-    <input type="text" id="number1">
+    <input type="text" id="number1" required>
 
     <button id="add">Add Task</button>
     
-    <ul id="history"></ul>
+    <ul id="task"></ul>
     <button id="delete">Delete Tasks</button>
 </main>
 </body>
 </html>
 
 <script>
-    let history = [];
+    let task = [];
     let openCount = 0;
     let closedCount = 0;
 
-    
-    function updateHistoryList() {
+    function updateList() {
+		localStorage.setItem("task", JSON.stringify(task));
+		localStorage.setItem("openCount", JSON.stringify(openCount));
+        	localStorage.setItem("closedCount", JSON.stringify(closedCount));
+	}
+    function updatetaskList() {
         
-        localStorage.setItem("history", JSON.stringify(history));
-        localStorage.setItem("openCount", JSON.stringify(openCount));
-        localStorage.setItem("closedCount", JSON.stringify(closedCount));
-        console.log(history);
-
+        let taskList = document.getElementById("task");
+        taskList.innerHTML = "";
         
-        let historyList = document.getElementById("history");
-        historyList.innerHTML = "";
-        
-        for (let i=0; i<history.length; i++) {
+        for (let i=0; i<task.length; i++) {
             let item = document.createElement("li");
             item.addEventListener("click", checkItem);
-            item.innerHTML = history[i].text;
+            item.innerHTML = task[i].text;
     
-            if (history[i].status != "open") {
+            if (task[i].status != "open") {
                 item.style.textDecoration = "line-through";
             }
-            historyList.append(item);
+            taskList.append(item);
         }
-        console.log(history);
-        document.getElementById("open").innerHTML = openCount + "tasks open!";
-        document.getElementById("close").innerHTML = closedCount + "tasks closed!";
+
+        document.getElementById("open").innerHTML = openCount + " tasks open!";
+        document.getElementById("close").innerHTML = closedCount + " tasks closed!";
     }
     function checkItem(event) {
         let currentCalcString = event.target.innerHTML;
-        let index = history.map(i=>i.text).indexOf(currentCalcString);
-        if (history[index].status == "open") {
-            history[index].status = "closed";
+        let index = task.map(i=>i.text).indexOf(currentCalcString);
+        if (task[index].status == "open") {
+            task[index].status = "closed";
             closedCount++;
         } else {
-            history[index].status = "open";
+            task[index].status = "open";
             openCount++;
         }
-        updateHistoryList();
-        if((history.length == closedCount) && history.length > 0){
+        updatetaskList();
+        if((task.length == closedCount) && task.length > 0){
             alert("All tasks finished! Good Job! ^-^");
         }
     }
     function deleteList() {
-        history = [];
+        task = [];
         openCount = 0;
         closedCount = 0;
-        updateHistoryList();
+        updateList();
+        updatetaskList();
     }
     function add(){
-        let task = document.getElementById("number1").value;
-        history.push({"text": task, "status": "open"});
+        let content = document.getElementById("number1").value;
+        task.push({"text": content, "status": "open"});
         openCount++;
-        updateHistoryList();
+        updateList();
+        updatetaskList();
     }
-    function loadHistory() {
-        history = JSON.parse(localStorage.getItem("history"));
-        openCount = JSON.parse(localStorage.getItem("openCount"));
+    function loadtask() {
+	    openCount = JSON.parse(localStorage.getItem("openCount"));
         closedCount = JSON.parse(localStorage.getItem("closedCount"));
-
-        updateHistoryList();
+        task = JSON.parse(localStorage.getItem("task"));
+		if (task == null) {
+			task = [];
+		}
+		updateList();
     }
 
     document.getElementById("add").addEventListener("click", add);
     document.getElementById("delete").addEventListener("click", deleteList);
-    document.addEventListener("DOMContentLoaded", loadHistory);
+    document.addEventListener("DOMContentLoaded", loadtask);
 
 </script>
