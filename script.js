@@ -1,11 +1,11 @@
-let task = [];
+    let task = [];
     let openCount = 0;
     let closedCount = 0;
 
     function updateList() {
 		localStorage.setItem("task", JSON.stringify(task));
 		localStorage.setItem("openCount", JSON.stringify(openCount));
-        	localStorage.setItem("closedCount", JSON.stringify(closedCount));
+        localStorage.setItem("closedCount", JSON.stringify(closedCount));
 	}
     function updatetaskList() {
         
@@ -32,9 +32,11 @@ let task = [];
         if (task[index].status == "open") {
             task[index].status = "closed";
             closedCount++;
+            openCount--;
         } else {
             task[index].status = "open";
             openCount++;
+            closedCount--;
         }
         updatetaskList();
         if((task.length == closedCount) && task.length > 0){
